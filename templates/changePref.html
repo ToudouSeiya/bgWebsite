@@ -1,0 +1,55 @@
+<html>
+<head>
+<title>Change Preferences</title>
+<style>
+body {background-color:tan;}
+h1 {color:sienna;margin:auto;text-align:center;font-size:60px;}
+form {max-width:fit-content;margin:auto;text-align:center; background-color:white; outline:5px solid sienna;padding:10px;}
+input, select {margin:5px;}
+p {font-size:20px; color:#5d3c24; text-align:center;}
+header {color:red; background-color:white; text-align:center;}
+a:link, a:visited { /*from w3schools template*/ 
+margin:auto;background-color: brown;color: white;border: 2px solid brown;padding: 10px 20px; text-align: center;text-decoration: none;display: flex;margin-top:25px;width:fit-content;}
+a:hover, a:active {background-color: red;color: white;border:2px solid red;}
+</style>
+</head>
+
+<body>
+
+<h1>Change Preferences</h1>
+<br>
+<form action={{url_for("updateData")}} method="GET">
+Name: {{name}} <br>
+
+Favorite Board Game Genre:
+<select name="faveGenre">
+{% for genre in genres %}
+<option name="faveGenre" value="{{genre[0]}}" {%if genre[0]==currGenre%}selected{%endif%}>{{genre[0]}}</option>
+{% endfor %}
+</select><br>
+
+I tend to play 
+<select name="faveNumPlayers">
+{% for i in range(maxPlayers) %}
+<option name="faveNumPlayers" value="{{i+1}}"{%if (i+1)|string==currPlayers%}selected{%endif%}>{{i+1}}</option>
+{% endfor %}
+</select>
+-player games
+<br>
+My favorite game is 
+<select name="faveGame">
+<option name="faveGame" value="N/A">N/A</option>
+{% for game in games %}
+<option name="faveGame" value="{{game[0]}}"{%if game[0]==currGame%}selected{%endif%}>{{game[0]}}</option>
+{% endfor %}
+</select>
+<br>
+
+<input type=submit value="Enter"/>
+
+</form>
+
+<a href="{{url_for('removeAccount')}}">Remove Account(!)</a>
+
+</body>
+</html>

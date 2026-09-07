@@ -1,0 +1,27 @@
+<html>
+<head>
+<title>Rename Game</title>
+<style>
+body {background-color:tan;}
+h1 {color:sienna;margin:auto;text-align:center;font-size:60px;}
+form {max-width:fit-content;margin:auto;text-align:center; background-color:white; outline:5px solid sienna;padding:10px;}
+input, select {margin:5px;}
+.top {float:right; margin-top:0; margin-right:25px;}
+a:link, a:visited { /*from w3schools template*/ 
+      background-color: white;color: black;border: 2px solid brown;padding: 10px 20px; text-align: center;text-decoration: none;display:inline-block;width:fit-content;}
+a:hover, a:active {background-color: brown;color: white;}
+</style>
+</head>
+
+<body>
+<a class="top" href="{{url_for('index')}}">Back</a>
+<a class="top" href="{{url_for('detailPage', game=game)}}">Cancel</a>
+<h1>Rename "{{game}}"</h1>
+<br><br>
+<form method="get" action="{{url_for('commitRename')}}">
+<input type="hidden" name="oldName" value="{{game}}"/>
+<input type="text" name="newName" value="{{game}}" required/>
+<input type="submit" value="Rename"/>
+</form>
+</body>
+</html>

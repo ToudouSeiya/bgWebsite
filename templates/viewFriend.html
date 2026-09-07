@@ -1,0 +1,63 @@
+<html>
+<head>
+<title>View Friend</title>
+<style>
+body {background-color: tan;}
+h1{color:sienna;text-align:center;font-size:60px;}
+h2{text-align:center;}
+table, th, td {margin:auto;border:1px solid black;color:black;background-color:Bisque;}
+form {display:block;margin:auto;max-width:fit-content;}
+a {display:block; margin:auto; text-align:center;max-width:fit-content;}
+header {color:red; background-color:white; text-align:center;}
+.section1,.section2 {color:#352c25; font-size:18px;display:inline-grid;}
+.section2 {text-align:center;display:block;min-width:40%;margin:auto; margin-left:50px;}
+.section1 {width:50%;}
+p {margin:0;}
+.userPref {display:inline-block;}
+.friends {margin:auto; width=fit-content; text-align:center;}
+a:link, a:visited { /*from w3schools template*/ 
+      background-color: white;color: black;border: 2px solid brown;padding: 10px 20px; text-align: center;text-decoration: none;display: flex;margin-top:25px;width:fit-content;}
+a:hover, a:active {background-color: brown;color: white;}
+.friendButton:link, .friendButton:visited {display:inline;padding:1px; margin-top:0px;}
+.heart:link, .heart:visited {color: sienna; background-color:Bisque; border:none; padding:0px; margin:0px;}
+.heart:hover, .heart:active {color: white;}
+.game:link, .game:visited {background-color:tan;color:sienna;display:inline;border:none;padding:0;margin:0;}
+.game:hover, .game:active {color:white;}
+</style>
+</head>
+
+<body>
+<div class="section2">
+<h1>Friend: {{friendName}}</h1>
+<div class="userPref">
+<p><b>Name:</b> {{friendName}}</p>
+<p><b>Favorite Genre:</b> {{friendGenre}}</p>
+<p><b>Favorite Game:</b>{% if friendGame != "N/A" %} <a class="game" href="{{url_for('detailPage', game=friendGame)}}">{{friendGame}}</a>{% else %} N/A{% endif %}</p>
+<p><b>Typical Player Count:</b> {{friendPlayers}}</p>
+</div>
+<h2>Wish List</h2>
+{% if friendWishes==[] %}
+Looks like {{friendName}} doesn't have anything in their wishlist yet. 
+{% else %}
+<table>
+    <tr>
+        <th>name</th>
+        <th>designer</th>
+        <th>genre</th>
+        <th>players</th>
+        <th>rating on bgg</th>
+    </tr>
+    {% for row in friendWishes %}
+    <tr>
+        <td><a class="heart" href="{{url_for('detailPage', game=row[0])}}">{{row[0]}}</a></td>
+        {% for data in row[1:] %}
+        <td>{{data}}</td>
+        {% endfor %}
+    </tr>
+    {% endfor %}
+</table>
+{% endif %}
+
+<a href="{{url_for('index')}}">Return</a>
+</div>
+</body>

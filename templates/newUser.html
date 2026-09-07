@@ -1,0 +1,61 @@
+<html>
+<head>
+<title>New User</title>
+<style>
+body {background-color:tan;}
+h1 {color:sienna;margin:auto;text-align:center;font-size:60px;}
+form {max-width:fit-content;margin:auto;text-align:center; background-color:white; outline:5px solid sienna;padding:10px;}
+input, select {margin:5px;}
+p {font-size:20px; color:#5d3c24; text-align:center;}
+header {color:red; background-color:white; text-align:center;}
+.hidden {color:white;}
+</style>
+</head>
+
+<body>
+<header>{{msg}}</header>
+<h1>Welcome!</h1>
+<p>It seems that you're a new user. <br>
+Please fill out the following information before continuing.</p>
+<br><br>
+
+<form action={{url_for("userData")}} method="GET">
+Username: 
+<input type=text name="name" value="" required/><br>
+
+Password:
+<input class="hidden" type=text name="password" value="" required/><br>
+
+Favorite Board Game Genre:
+<select name="faveGenre">
+{% for genre in genres %}
+<option name="faveGenre" value="{{genre[0]}}">{{genre[0]}}</option>
+{% endfor %}
+</select><br>
+
+I tend to play 
+<select name="faveNumPlayers">
+{% if maxPlayers >= 10 %}
+{% set maxPlayers = 9 %}
+{% endif %}
+{% for i in range(maxPlayers) %}
+<option name="faveNumPlayers" value="{{i+1}}">{{i+1}}{% if i+1==9 %}+{% endif %}</option>
+{% endfor %}
+</select>
+-player games
+<br>
+My favorite game is 
+<select name="faveGame">
+<option name="faveGame" value="N/A">N/A</option>
+{% for game in games %}
+<option name="faveGame" value="{{game[0]}}">{{game[0]}}</option>
+{% endfor %}
+</select>
+<br>
+
+<input type=submit value="Enter"/>
+
+<a href="{{url_for('logIn', msg='')}}">Already have an account?</a>
+</form>
+</body>
+</html>

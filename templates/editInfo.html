@@ -1,0 +1,151 @@
+<html>
+<head>
+<title>Edit {{game}}</title>
+<style>
+body {background-color: tan;}
+h1{color:sienna;text-align:center;font-size:60px;}
+h2{margin:0;color:firebrick; text-align:center;}
+a {display:block; margin:auto; text-align:center;max-width:fit-content;}
+header {color:red; background-color:white; text-align:center;}
+table {width:fit-content; display:block;margin:auto;background-color: beige; color:#352c25; font-size:18px;}
+td {padding:5px 10px 5px 10px;}
+p {margin:0;}
+a:link, a:visited { /*from w3schools template*/ 
+      background-color: white;color: black;border: 2px solid brown;padding: 10px 20px; text-align: center;text-decoration: none;display:inline-block;width:fit-content;}
+a:hover, a:active {background-color: brown;color: white;}
+.friendButton:link, .friendButton:visited {display:inline;padding:1px; margin: 0 10px 0 10px;}
+.heart:link, .heart:visited {display:inline;background-color:beige; border:none; padding:0px; margin:0px;}
+.diff {font-size:25px;}
+.images {width:fit-content; margin:auto;}
+.comments {text-align:center;width:100%; background-color:beige;color:black;margin:10px auto;border:2px solid brown;}
+.comments>tbody>tr>td {border-bottom:2px solid brown; display:block; margin:auto;}
+.comments>tbody{display:inline-block;width:100%;}
+.comments>tbody>tr{padding: 10px 0 10px 0; display:block;width:100%;}
+.top {float:right; margin-top:0; margin-right:25px;}
+.textbox {height:50px; width:50%;}
+.mongo {width:60%;border:solid 2px brown;}
+.mongo>tbody>tr{border:solid 2px brown;width:100%;margin:auto;text-align:center;display:block;}
+.mongo>tbody{width:100%;display:block;}
+.warning:link, .warning:visited {color:white;background-color:brown;}
+.warning:active, .warning:hover {color:white;background-color:red;border:2px solid red;}
+</style>
+</head>
+
+<body>
+<form method="GET" action="{{url_for('editGameData')}}">
+<input type="hidden" name="game" value="{{game}}"/>
+    
+<header>{{msg}}</header>
+
+<a class="top" href="{{url_for('index')}}">Back</a>
+<a class="top" href="{{url_for('detailPage', game=game)}}">Cancel</a>
+
+<div class="images"><h1>{{game}}</h1></div>
+<div class="images">
+<a href="{{url_for('renameGame',game=game)}}">Rename</a> <a class="warning" href="{{url_for('deleteGame', game=game)}}">Delete Game(!)</a>
+</div>
+<br>
+<table>
+<tr>
+<td><b>Year Published:</b> 
+<input type="number" name="releaseYear" step=1 value="{{mariaData[0]}}" required/><br>
+</td><td><b>Game Designer:</b>
+<select name="designer"  required>
+{% for designer in designers %}
+    {% if designer[0]==mariaData[1] %}
+    <option selected value="{{designer[0]}}">{{designer[0]}}</option>
+    {% else %}
+    <option value="{{designer[0]}}">{{designer[0]}}</option>
+    {% endif %}
+{% endfor %}
+</select>
+</td><td>
+<b>Publisher:</b> 
+<input type="text" name="publisher" maxlength=100 value="{{mariaData[2]}}"/><br>
+</td><td>
+<b>Genre:</b>  <input type="text" name="genre" maxlength=100 value="{{mariaData[3]}}"required/><br></td><td>
+<b>Minimum Players:</b>
+<input type="number" name="minPlayers" step=1 min=1 value="{{mariaData[4]}}" required/><br>
+</td><td>
+<b>Maximum Players:</b>
+<input type="number" name="maxPlayers" step=1 min=1 value="{{mariaData[5]}}" required/><br>
+</td><td>
+<b>BGG Rating:</b> 
+<input type="number" name="rating" step = 0.1 min=0 max=10 value="{{mariaData[6]}}" required/><br>
+</td>
+</tr>
+</table>
+<br>
+<div class="images"><input type="submit" value="Submit Changes"/></div>
+<br>
+<div class="images">
+{% if imgs != "n/a" %}
+{% for img in imgs %}
+<br>
+<img src={{img}} />
+<a class="remove" href="{{url_for('removeData', game=game, field='images', data=img)}}">Remove Image</a>
+<br>
+{% endfor %}
+<br>
+{% endif %}
+<br>
+</div><div class="images"><a class="add" href="{{url_for('addImage', game=game)}}">Add Image</a>
+</div>
+<br>
+<br>
+
+</form>
+<form method="get" action="{{url_for('commitMongoData')}}">
+<input type="hidden" name="game" value="{{game}}"/>
+{% if fields != [] %}
+<br>
+<table class="mongo">
+{% for field in fields %}
+<tr>
+<td><b>
+<a class="heart" href="{{url_for('removeMongoField', game=game, field=field)}}"><img width=20px; src="{{url_for('static', filename='minus.png')}}"/></a>
+<input type="text" name="{{field[0]}}.key" value="{{field[0]}}"/>
+</b></td>
+<td>
+{% if field[1] is none or field[1] is string %}
+<input type="text" name="{{field[0]}}.value" value="{{field[1]}}"/>
+
+{% elif field[1] is mapping %}
+
+{% for key, value in field[1].items() %}
+<a class="heart" href="{{url_for('removeData', game=game, field=field, data=key, map='true')}}"><img width=20px; src="{{url_for('static', filename='minus.png')}}"/></a>
+<b><input type="text" name="{{field[0]}}.{{key}}.key" value="{{key}}"/>:</b> <input type="text" name="{{field[0]}}.{{key}}.value" value="{{value}}"/> 
+<br>
+{% endfor %}
+<br>
+<b>New Key-Value Pair: <input type="text" name="{{field[0]}}.newKey" value=""/>:</b>
+<input type="text" name="{{field[0]}}.newValue" value=""/>
+
+{% else %}
+
+{% for elem in field[1] %}
+<a class="heart" href="{{url_for('removeData', game=game, field=field, data=elem)}}"><img width=20px; src="{{url_for('static', filename='minus.png')}}"/></a>
+<input type="text" name="{{field[0]}}.{{elem}}" value="{{elem}}"/>
+<br>
+{% endfor %}
+<br>
+<b>New Value: </b><input type="text" name="{{field[0]}}.newValue" value=""/>
+
+{% endif %}
+</td>
+</tr>
+{% endfor %}
+</table>
+<br>
+<div class="images"><input type="submit" value="Commit Changes"/></div>
+<br>
+{% endif %}
+<div class="images">
+<br>
+<a href="{{url_for('addNewField',game=game)}}">Add New Field</a>
+</div>
+<br>
+
+</form>
+</body>
+</html>

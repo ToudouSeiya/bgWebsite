@@ -1,0 +1,55 @@
+<html>
+
+<head>
+<title>Add Board Game</title>
+<style>
+body {background-color:tan;}
+h1 {color:sienna;margin:auto;text-align:center;font-size:60px;}
+form {max-width:fit-content;margin:auto;text-align:center; background-color:white; outline:5px solid sienna;padding:10px;}
+input, select {margin:5px;}
+.top {float:right; margin-top:0; margin-right:25px;}
+a:link, a:visited { /*from w3schools template*/ 
+      background-color: white;color: black;border: 2px solid brown;padding: 10px 20px; text-align: center;text-decoration: none;display:inline-block;width:fit-content;}
+a:hover, a:active {background-color: brown;color: white;}
+</style>
+</head>
+
+<body>
+<a class="top" href="{{url_for('index')}}">Back</a>
+<h1>Add Board Game</h1>
+<br><br>
+<form method="get" action="{{url_for('commit_game_data')}}">
+
+<label for="name">Name:</label>
+<input type="text" name="name" maxlength=100 required/><br>
+
+<label for="designer">Designer:</label>
+<select name="designer" required>
+{% for designer in designers %}
+    <option value="{{designer[0]}}">{{designer[0]}}</option>
+{% endfor %}
+</select><br>
+
+<label for="publisher">Publisher:</label>
+<input type="text" name="publisher" maxlength=100 /><br>
+
+<label for="releaseYear">Year Released:</label>
+<input type="number" name="releaseYear" step=1 required/><br>
+
+<label for="minPlayers">Minimum Number of Players:</label>
+<input type="number" name="minPlayers" step=1 min=1 required/><br>
+
+<label for="maxPlayers">Maximum Number of Players:</label>
+<input type="number" name="maxPlayers" step=1 min=1 required/><br>
+
+<label for="genre">Genre:</label>
+<input type="text" name="genre" maxlength=100 required/><br>
+
+<label for="rating">Rating on BoardGameGeek:</label>
+<input type="number" name="rating" step = 0.1 min=0 max=10 required/><br>
+
+<input type="submit" value="Add"/>
+</form>
+</body>
+
+</html>

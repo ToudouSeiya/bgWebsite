@@ -1,0 +1,22 @@
+<html>
+
+<head>
+<title>Add Friend</title>
+<style>
+body {background-color:tan;}
+h1 {color:sienna;margin:auto;text-align:center;font-size:60px;}
+form {max-width:fit-content;margin:auto;text-align:center; background-color:white; outline:5px solid sienna;padding:10px;}
+input, select {margin:5px;}
+</style>
+</head>
+
+<body>
+<h1>Add Friend</h1>
+<br>
+<form action="{{url_for('friendData')}}" method="GET">
+Friend's Name:<input type="text" name="friendName" value="" required><br>
+<input type="submit" value="Search"/>
+</form>
+
+</body>
+</html>

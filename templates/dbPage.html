@@ -1,0 +1,170 @@
+<html>
+<head>
+<title>Board Games</title>
+<style>
+body {background-color: tan;}
+h1{color:sienna;text-align:center;font-size:60px;}
+h2{text-align:center;}
+table, th, td {margin:auto;border:1px solid black;color:black;background-color:Bisque;}
+form {display:block;margin:auto;max-width:fit-content;}
+a {display:block; margin:auto; text-align:center;max-width:fit-content;}
+header {color:red; background-color:white; text-align:center;}
+.section1,.section2 {color:#352c25; font-size:18px;display:inline-grid;}
+.section2 {min-width:40%;margin:auto; margin-left:50px;}
+.section1 {width:50%;}
+p {margin:0;}
+.userPref {display:inline-block;}
+.friends {margin:auto; width:fit-content; text-align:center;}
+a:link, a:visited { /*from w3schools template*/ 
+      background-color: white;color: black;border: 2px solid brown;padding: 10px 20px; text-align: center;text-decoration: none;display: flex;margin-top:25px;width:fit-content;}
+a:hover, a:active {background-color: brown;color: white;}
+.friendButton:link, .friendButton:visited {display:inline;padding:1px; margin: 0 10px 0 10px;}
+.heart:link, .heart:visited {color: sienna; background-color:Bisque; border:none; padding:0px; margin:0px;}
+.heart:hover, .heart:active {color: white;}
+.arrows:link, .arrows:visited {display:inline-block;padding:0;background-color:Bisque;border:2px solid brown; margin:auto;}
+.diff {font-size:25px;}
+.top {display:block;margin-top:0; margin-right:0px;}
+.game:link, .game:visited {background-color:tan;color:sienna;display:inline;border:none;padding:0;margin:0;}
+.game:hover, .game:active {color:white;}
+</style>
+</head>
+
+<body>
+<header>{{msg}}</header>
+<a class="top" href="{{url_for('logOut')}}">Log Out</a>
+<div class="section1">
+<h1 class="title">Board Games</h1>
+
+<table>
+    <tr>
+        <th>name</th>
+        <th>year released</th>
+        <th>designer</th>
+        <th>publisher</th>
+        <th>genre</th>
+        <th>players</th>
+        <th>rating on bgg</th>
+        <th>country</th>
+    </tr>
+    {% for row in table %}
+    <tr>
+        <td><a class="heart" href="{{url_for('detailPage', game=row[0])}}">{{row[0]}}</a></td>
+        {% for data in row[1:] %}
+        <td>{{data}}</td>
+        {% endfor %}
+        <td><a class="heart" href="{{url_for('addWish', game=row[0])}}"><img src="{{url_for('static', filename='heart.png')}}" width=20px/></a></td>
+    </tr>
+    {% endfor %}
+</table>
+
+<form method="POST" action="{{url_for('index')}}">
+
+{% if noLeft != 1 %}
+<a class="arrows" href="{{url_for('scroll', dir='left')}}"><img width=20px; src="{{url_for('static', filename='leftArrow.png')}}"/></a>
+{% endif %}
+{% if noRight != 1 %}
+<a class="arrows" href="{{url_for('scroll',dir='right')}}"><img width=20px; src="{{url_for('static', filename='rightArrow.png')}}"/></a>
+{% endif %}
+<br><br>
+
+<label for="order">Sort By:</label>
+<select name="order">
+    <option value="" {% if newPrompt[0]=="" %}selected{% endif %}>Any</option>
+    <option value="order by releaseYear desc"{% if newPrompt[0]=='order by releaseYear desc' %}selected{% endif %}>Newest</option>
+    <option value="order by releaseYear asc"{% if newPrompt[0]=="order by releaseYear asc" %}selected{% endif %}>Oldest</option>
+    <option value="order by bggRating desc"{% if newPrompt[0]=="order by bggRating desc" %}selected{% endif %}>Highest Rating</option>
+    <option value="order by bggRating asc"{% if newPrompt[0]=="order by bggRating asc" %}selected{% endif %}>Lowest Rating</option>
+</select>
+
+<label for="name">Name: </label>
+<input type="text" name="name" value="{{newPrompt[1].replace('\'', '', 2).replace('%', '', 2).replace('like ', '', 1)}}"/>
+
+<label for="designer">Designer: </label>
+<select name="designer">
+    <option value="*">Any</option>
+{% for designer in designers %}
+    <option value="{{designer[0]}}" {% if newPrompt[2].replace("'", '', 2).replace("=", "", 1) == designer[0] %}selected{% endif %}>{{designer[0]}}</option>
+{% endfor %}
+</select>
+
+<label for="genre">Genre: </label>
+<select name="genre">
+    <option value ="*">Any</option>
+{% for genre in genres %}
+    <option value="{{genre[0]}}" {% if newPrompt[3].replace("'", '', 2).replace("=", "", 1) == genre[0] %}selected{% endif %}>{{genre[0]}}</option>
+{% endfor %}
+</select>
+
+<label for="players">Players: </label>
+<select name="players">
+    <option value ="*">Any</option>
+{% if maxPlayers >= 10 %}
+{% set maxPlayers = 9 %}
+{% endif %}
+{% for i in range(1, maxPlayers+1, 1) %}
+    <option value={{i}} {% if (newPrompt[4].replace("and minPlayers<=", "",1).replace(" and maxPlayers >=", "", 1)[0]) | int == i %}selected{% endif %}>{{i}}{% if i==9%}+{% endif %}</option>
+{% endfor %}
+</select>
+
+<input type=submit value="Filter"/>
+</form>
+
+
+<br>
+<p>
+<a href="{{url_for('randomGame')}}">Random Game</a>
+<a href="{{url_for('add_data')}}">Add Board Game</a>
+<a href="{{url_for('add_designer_data')}}">Add Game Designer</a>
+</p></div>
+
+<div class="section2">
+<h1>User Info</h1>
+<div class="userPref">
+<p><b>Name:</b> {{username}}</p>
+<p><b>Favorite Genre:</b> {{faveGenre}}</p>
+<p><b>Favorite Game:</b> {% if faveGame != "N/A" %} <a class="game" href="{{url_for('detailPage', game=faveGame)}}">{{faveGame}}</a> {% else %} N/A {% endif %}</p>
+<p><b>Typical Player Count:</b> {{favePlayers}}</p>
+</div>
+<div class="userPref">
+<a href="{{url_for('changePreferences')}}">Change Preferences</a>
+</div>
+<div class="friends">
+<h2>Friends</h2>
+{% if friends == {} %}
+You don't have any friends yet.
+{% else %}
+<ul>
+{% for friend in friends %}
+<li>{{friend}}
+<a class="friendButton" href="{{url_for("viewFriend", friend=friend)}}">View</a><a class="friendButton" href="{{url_for("removeFriend", friend=friend)}}">Remove</a></li><br>
+{% endfor %}
+</ul>
+{% endif %}
+<a href="{{url_for('addFriend')}}">Add Friend</a>
+</div>
+<h2>Wish List</h2>
+{% if wishlist==[] %}
+Looks like you don't have anything in your wishlist yet. Click the heart next to a game to add it!
+{% else %}
+<table>
+    <tr>
+        <th>name</th>
+        <th>designer</th>
+        <th>genre</th>
+        <th>players</th>
+        <th>rating on bgg</th>
+    </tr>
+    {% for row in wishlist %}
+    <tr>
+        <td><a class="heart" href="{{url_for('detailPage', game=row[0])}}">{{row[0]}}</a></td>
+        {% for data in row[1:] %}
+        <td>{{data}}</td>
+        {% endfor %}
+        <td><a class="heart" href="{{url_for('removeWish', game=row[0])}}"><img width=20px; src="{{url_for('static', filename='minus.png')}}"/></a></td>
+    </tr>
+    {% endfor %}
+</table>
+{% endif %}
+
+</div>
+</body>

@@ -1,0 +1,35 @@
+<html>
+<head>
+<title>Log In</title>
+<style>
+body {background-color:tan;}
+h1 {color:sienna;margin:auto;text-align:center;font-size:60px;}
+form {max-width:fit-content;margin:auto;text-align:center; background-color:white; outline:5px solid sienna;padding:10px;}
+input, select {margin:5px;}
+p {font-size:20px; color:#5d3c24; text-align:center;}
+header {color:red; background-color:white; text-align:center;}
+.hidden {color:white;}
+</style>
+</head>
+
+<body>
+<header>{{msg}}</header>
+<h1>Log In</h1>
+<br><br>
+
+<form action={{url_for("verifyLogin")}} method="GET">
+Username: 
+<input type=text name="username" value="" required/><br>
+
+Password:
+<input class="hidden" type=text name="password" value="" required/><br>
+
+</select>
+<br>
+
+<input type=submit value="Log In"/>
+
+<a href="{{url_for('newUser', msg='')}}">New Account</a>
+</form>
+</body>
+</html>

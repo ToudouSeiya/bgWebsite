@@ -1,0 +1,148 @@
+<html>
+<head>
+<title>{{game}}</title>
+<style>
+body {background-color: tan;}
+h1{color:sienna;text-align:center;font-size:60px;}
+h2{margin:0;color:firebrick; text-align:center;}
+a {display:block; margin:auto; text-align:center;max-width:fit-content;}
+header {color:red; background-color:white; text-align:center;}
+table {width:fit-content; display:block;margin:auto;background-color: beige; color:#352c25; font-size:18px;}
+td {padding:5px 10px 5px 10px;}
+p {margin:0;}
+a:link, a:visited { /*from w3schools template*/ 
+      background-color: white;color: black;border: 2px solid brown;padding: 10px 20px; text-align: center;text-decoration: none;display:inline-block;width:fit-content;}
+a:hover, a:active {background-color: brown;color: white;}
+.friendButton:link, .friendButton:visited {display:inline;padding:1px; margin: 0 10px 0 10px;}
+.heart:link, .heart:visited {display:inline;background-color:tan; border:none; padding:0px; margin:0px;}
+.diff {font-size:25px;}
+.images {width:fit-content; margin:auto;}
+form {margin: 10px 40px; width:40%; display:inline-block; float:left;}
+.comments {text-align:center;width:100%; background-color:beige;color:black;margin:10px auto;border:2px solid brown;}
+.comments>tbody>tr>td {border-bottom:2px solid brown; display:block; margin:auto;}
+.comments>tbody{display:inline-block;width:100%;}
+.comments>tbody>tr{padding: 10px 0 10px 0; display:block;width:100%;}
+.top {float:right; margin-top:0; margin-right:25px;}
+.textbox {height:50px; width:50%;}
+.mongo {width:60%;border:solid 2px brown;}
+.mongo>tbody>tr{width:fit-content;margin:auto;text-align:center;display:block;}
+.mongo>tbody{width:100%;display:block;}
+</style>
+</head>
+
+<body>
+<header>{{msg}}</header>
+<a class="heart" href="{{url_for('addWish', game=game)}}"><img src="{{url_for('static', filename='heart.png')}}" width=60px/></a>
+<a class="top" href="{{url_for('index')}}">Back</a>
+<a class="top" href="{{url_for('editInfo', game=game)}}">Edit</a>
+
+<div class="images"><h1>{{game}}</h1></div>
+<table>
+<tr>
+<td><b>Year Published:</b> {{mariaData[0]}} 
+</td><td><b>Game Designer:</b> {{mariaData[1]}} </td><td>
+<b>Publisher:</b> {{mariaData[2]}} </td><td>
+<b>Genre:</b> {{mariaData[3]}} </td><td>
+<b>Players:</b> {{mariaData[4]}}</td><td>
+<b>BGG Rating:</b> {{mariaData[5]}} </td>
+</tr>
+</table>
+<div class="images">
+{% if imgs != "n/a" %}
+{% for img in imgs %}
+<br>
+<img src={{img}} />
+<br>
+{% endfor %}
+<br>
+{% endif %}
+</div>
+
+{% if fields != [] %}
+<br>
+<table class="mongo">
+{% for field in fields %}
+<tr>
+<td><b>{{field[0]}}</b></td>
+<td>
+{% if field[1] is none or field[1] is string %}
+
+{{field[1]}}
+
+{% elif field[1] is mapping %}
+
+{% for key, value in field[1].items() %}
+<b>{{key}}:</b> {{value}}<br> 
+{% endfor %}
+{% else %}
+
+{% for elem in field[1] %}
+{{elem}}<br>
+{% endfor %}
+
+{% endif %}
+</td>
+</tr>
+{% endfor %}
+</table>
+<br>
+{% endif %}
+
+{% if wished != 0 %}
+<h2>{% if wished==1 %} 1 person has {% else %} {{wished}} people have {% endif %}this game on their wishlist!</h2>
+{% endif %}
+
+<form method="GET" action="{{url_for('addComment')}}">
+<input type="hidden" name="game" value="{{game}}">
+<table class="comments">
+<tr><td><h2>Comments:</h2></td></tr>
+
+{% if comments == "n/a" %}
+<tr><td>There are no comments on this game yet.</td></tr>
+{% else %}
+
+{% for comment in comments %}
+<tr><td>
+{{comment['comment']}} <br><br> -{{comment['user']}}
+{% if comment['user'] == user %}
+<a style="background-color:Beige;" class="heart" href="{{url_for('editComment', game=game, comment=comment['comment'])}}"><img src="{{url_for('static', filename='edit.png')}}" width=30px/></a>
+<a style="background-color:Beige;" class="heart" href="{{url_for('deleteComment', game=game, comment=comment['comment'])}}"><img src="{{url_for('static', filename='delete.png')}}" width=30px/></a>
+{% endif %}
+</td></tr>
+{% endfor %}
+
+{% endif %}
+
+<tr><td><input class="textbox" type="text" value="" name="comment" required>
+<br><br>
+<input type="submit" value="Add Comment"></input></td></tr>
+</table>
+</form>
+
+
+<form method="GET" action="{{url_for('addRating')}}">
+<input type="hidden" name="game" value="{{game}}">
+<table class="comments">
+<tr><td><h2>Ratings:</h2></td></tr>
+
+{% if ratings == "n/a" %}
+<tr><td>There are no ratings for this game yet.</td></tr>
+{% else %}
+
+{% for rating in ratings %}
+<tr><td>{{rating['rating']}}/10 <br><br> -{{rating['user']}}</td></tr>
+{% endfor %}
+
+{% endif %}
+
+<tr><td><input type="number" value=5 name="rating" max=10 min=0 step=1 required>
+<br><br>
+<input type="submit" value="Add Rating"></input></td></tr>
+</table>
+</form>
+
+<br>
+<footer>
+</footer>
+</body>
+</html>

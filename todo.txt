@@ -1,0 +1,6 @@
+IF TIME
+    delete ratings
+    make it pretty
+    detail page for game designers too (and ability to edit, etc.)
+   'claim' game on friends wishlist
+   neo4j? something to do with friends
